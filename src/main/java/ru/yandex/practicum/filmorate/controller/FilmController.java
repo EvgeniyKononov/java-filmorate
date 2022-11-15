@@ -22,7 +22,7 @@ public class FilmController {
         return filmList;
     }
 
-    @PostMapping(value = "/film")
+    @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) {
         if (!validateFilm(film)) {
             return null;
@@ -35,7 +35,7 @@ public class FilmController {
         }
     }
 
-    @PutMapping(value = "/film")
+    @PutMapping(value = "/films")
     public Film amend(@RequestBody Film film) {
         if (!validateFilm(film)) {
             return null;
