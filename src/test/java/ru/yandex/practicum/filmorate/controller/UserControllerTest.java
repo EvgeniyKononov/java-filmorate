@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -29,11 +29,9 @@ public class UserControllerTest {
         userController.create(user);
         assertEquals(1, userController.findAll().size());
         user.setEmail("");
-        userController.create(user);
-        assertEquals(1, userController.findAll().size());
+        assertThrows(ValidationException.class, () -> userController.create(user));
         user.setEmail("mail");
-        userController.create(user);
-        assertEquals(1, userController.findAll().size());
+        assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
     @Test
@@ -42,11 +40,9 @@ public class UserControllerTest {
         userController.create(user);
         assertEquals(1, userController.findAll().size());
         user.setLogin("");
-        userController.create(user);
-        assertEquals(1, userController.findAll().size());
+        assertThrows(ValidationException.class, () -> userController.create(user));
         user.setLogin(" login ");
-        userController.create(user);
-        assertEquals(1, userController.findAll().size());
+        assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
     @Test
@@ -55,8 +51,7 @@ public class UserControllerTest {
         userController.create(user);
         assertEquals(1, userController.findAll().size());
         user.setBirthday(LocalDate.of(2095, 12, 27));
-        userController.create(user);
-        assertEquals(1, userController.findAll().size());
+        assertThrows(ValidationException.class, () -> userController.create(user));
     }
 
 

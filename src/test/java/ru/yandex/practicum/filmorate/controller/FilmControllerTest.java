@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -28,8 +29,7 @@ class FilmControllerTest {
         filmController.create(film);
         assertEquals(1, filmController.findAll().size());
         film.setName("");
-        filmController.create(film);
-        assertEquals(1, filmController.findAll().size());
+        assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 
     @Test
@@ -40,8 +40,7 @@ class FilmControllerTest {
         film.setDescription("111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
                 "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111" +
                 "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
-        filmController.create(film);
-        assertEquals(1, filmController.findAll().size());
+        assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 
     @Test
@@ -50,8 +49,7 @@ class FilmControllerTest {
         filmController.create(film);
         assertEquals(1, filmController.findAll().size());
         film.setDate(LocalDate.of(1895, 12, 27));
-        filmController.create(film);
-        assertEquals(1, filmController.findAll().size());
+        assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 
     @Test
@@ -60,8 +58,7 @@ class FilmControllerTest {
         filmController.create(film);
         assertEquals(1, filmController.findAll().size());
         film.setDuration(0);
-        filmController.create(film);
-        assertEquals(1, filmController.findAll().size());
+        assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 
 }
