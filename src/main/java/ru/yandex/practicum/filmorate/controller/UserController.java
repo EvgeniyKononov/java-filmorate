@@ -24,16 +24,14 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public User create(@RequestBody User user) {
-        if (!validateUser(user)) {
-            return null;
-        } else {
+        if (validateUser(user)) {
             user.setName(checkAndReturnName(user));
             user.setId(id);
             users.put(id, user);
             id++;
-            log.debug("Добавлен фильм: {}", user);
-            return user;
+            log.debug("Добавлен пользователь: {}", user);
         }
+        return user;
     }
 
     @PutMapping(value = "/users")
@@ -47,7 +45,7 @@ public class UserController {
                 oldUser = users.get(user.getId());
                 users.put(user.getId(), user);
             }
-            log.debug("Фильм {} изменен на {}", oldUser, user);
+            log.debug("Пользователь {} изменен на {}", oldUser, user);
             return user;
         }
     }
