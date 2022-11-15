@@ -22,7 +22,7 @@ public class UserController {
         return userList;
     }
 
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/users")
     public User create(@RequestBody User user) {
         if (!validateUser(user)) {
             return null;
@@ -36,7 +36,7 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "/user")
+    @PutMapping(value = "/users")
     public User amend(@RequestBody User user) {
         if (!validateUser(user)) {
             return null;
