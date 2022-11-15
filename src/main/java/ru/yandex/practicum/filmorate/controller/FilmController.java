@@ -24,43 +24,34 @@ public class FilmController {
 
     @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) {
-        if (!validateFilm(film)) {
-            return null;
-        } else {
+        if (validateFilm(film)) {
             film.setId(id);
             films.put(id, film);
             id++;
             log.debug("Добавлен фильм: {}", film);
-            return film;
         }
+        return film;
     }
 
     @PutMapping(value = "/films")
     public Film amend(@RequestBody Film film) {
-        if (!validateFilm(film)) {
-            return null;
-        } else {
+        if (validateFilm(film)) {
             Film oldFilm = new Film();
             if (films.containsKey(film.getId())) {
                 oldFilm = films.get(film.getId());
                 films.put(film.getId(), film);
             }
             log.debug("Фильм {} изменен на {}", oldFilm, film);
-            return film;
         }
+        return film;
     }
 
     private boolean validateFilm(Film film) {
         boolean isValid = true;
-        try {
-            validateName(film.getName());
-            validateDescription(film.getDescription());
-            validateDate(film.getDate());
-            validateDuration(film.getDuration());
-        } catch (ValidationException e) {
-            log.debug("Неверно указаны данные, а именно {}", e.getMsg());
-            isValid = false;
-        }
+        validateName(film.getName());
+        validateDescription(film.getDescription());
+        validateDate(film.getDate());
+        validateDuration(film.getDuration());
         return isValid;
     }
 

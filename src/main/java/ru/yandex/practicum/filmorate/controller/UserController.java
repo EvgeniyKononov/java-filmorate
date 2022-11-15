@@ -36,9 +36,7 @@ public class UserController {
 
     @PutMapping(value = "/users")
     public User amend(@RequestBody User user) {
-        if (!validateUser(user)) {
-            return null;
-        } else {
+        if (validateUser(user)) {
             User oldUser = new User();
             user.setName(checkAndReturnName(user));
             if (users.containsKey(user.getId())) {
@@ -46,20 +44,15 @@ public class UserController {
                 users.put(user.getId(), user);
             }
             log.debug("Пользователь {} изменен на {}", oldUser, user);
-            return user;
         }
+        return user;
     }
 
     private boolean validateUser(User user) {
         boolean isValid = true;
-        try {
-            validateEmail(user.getEmail());
-            validateLogin(user.getLogin());
-            validateBirthday(user.getBirthday());
-        } catch (ValidationException e) {
-            log.debug("Неверно указаны данные, а именно {}", e.getMsg());
-            isValid = false;
-        }
+        validateEmail(user.getEmail());
+        validateLogin(user.getLogin());
+        validateBirthday(user.getBirthday());
         return isValid;
     }
 
