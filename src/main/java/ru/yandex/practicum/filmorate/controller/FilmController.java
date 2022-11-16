@@ -7,7 +7,9 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class FilmController {
@@ -36,12 +38,14 @@ public class FilmController {
     @PutMapping(value = "/films")
     public Film amend(@RequestBody Film film) {
         if (validateFilm(film)) {
-            Film oldFilm = new Film();
+            Film oldFilm;
             if (films.containsKey(film.getId())) {
                 oldFilm = films.get(film.getId());
                 films.put(film.getId(), film);
+                log.debug("Фильм {} изменен на {}", oldFilm, film);
+            } else {
+                throw new ValidationException("нет фильма с таким id");
             }
-            log.debug("Фильм {} изменен на {}", oldFilm, film);
         }
         return film;
     }
@@ -50,7 +54,7 @@ public class FilmController {
         boolean isValid = true;
         validateName(film.getName());
         validateDescription(film.getDescription());
-        validateDate(film.getDate());
+        validateDate(film.getReleaseDate());
         validateDuration(film.getDuration());
         return isValid;
     }

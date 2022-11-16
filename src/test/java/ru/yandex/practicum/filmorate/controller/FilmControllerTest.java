@@ -19,7 +19,7 @@ class FilmControllerTest {
         film = new Film();
         film.setName("name");
         film.setDescription("description");
-        film.setDate(LocalDate.of(2022, 01, 01));
+        film.setReleaseDate(LocalDate.of(2022, 01, 01));
         film.setDuration(90);
     }
 
@@ -48,7 +48,7 @@ class FilmControllerTest {
         assertEquals(0, filmController.findAll().size());
         filmController.create(film);
         assertEquals(1, filmController.findAll().size());
-        film.setDate(LocalDate.of(1895, 12, 27));
+        film.setReleaseDate(LocalDate.of(1895, 12, 27));
         assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 

@@ -11,14 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
     private UserController userController;
-    private User user;
+    private User user = new User();
 
     @BeforeEach
     public void beforeEach() {
         userController = new UserController();
-        user = new User();
-        user.setEmail("name@ya.ru");
         user.setLogin("login");
+        user.setEmail("name@ya.ru");
         user.setName("name");
         user.setBirthday(LocalDate.of(2000, 01, 01));
     }

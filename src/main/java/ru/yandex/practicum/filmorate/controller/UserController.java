@@ -42,8 +42,10 @@ public class UserController {
             if (users.containsKey(user.getId())) {
                 oldUser = users.get(user.getId());
                 users.put(user.getId(), user);
+                log.debug("Пользователь {} изменен на {}", oldUser, user);
+            } else {
+                throw new ValidationException("неверный номер ID");
             }
-            log.debug("Пользователь {} изменен на {}", oldUser, user);
         }
         return user;
     }
@@ -57,7 +59,7 @@ public class UserController {
     }
 
     private String checkAndReturnName(User user) {
-        if (user.getName().isBlank()) {
+        if (Objects.equals(null, user.getName())) {
             return user.getLogin();
         } else {
             return user.getName();
