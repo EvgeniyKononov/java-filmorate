@@ -26,7 +26,7 @@ class FilmControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        filmController = new FilmController();
+        //filmController = new FilmController();
         film = new Film();
         film.setName("name");
         film.setDescription("description");

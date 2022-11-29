@@ -1,57 +1,59 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.user.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import javax.validation.Valid;
 import java.util.*;
 
 @RestController
 public class UserController {
-    private final HashMap<Long, User> users = new HashMap<>();
-    private Long id = 1L;
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/users")
     public List<User> findAll() {
-        List<User> userList = new ArrayList<>(users.values());
-        log.debug("Текущее количесвто пользователей: {}", users.size());
-        return userList;
+        return userService.getUserStorage().findAll();
+    }
+
+    @GetMapping("/users/{id}")
+    public User find(@PathVariable Long id) {
+        return userService.getUserStorage().find(id);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> findFriends(@PathVariable Long id) {
+        return userService.getFriends(userService.getUserStorage().find(id).getFriends());
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> findCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 
     @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user) {
-        user.setName(checkAndReturnName(user));
-        user.setId(id);
-        users.put(id, user);
-        id++;
-        log.debug("Добавлен пользователь: {}", user);
-        return user;
+        return userService.getUserStorage().create(user);
     }
 
     @PutMapping(value = "/users")
     public User amend(@Valid @RequestBody User user) {
-        User oldUser;
-        user.setName(checkAndReturnName(user));
-        if (users.containsKey(user.getId())) {
-            oldUser = users.get(user.getId());
-            users.put(user.getId(), user);
-            log.debug("Пользователь {} изменен на {}", oldUser, user);
-        } else {
-            throw new ValidationException("неверный номер ID");
-        }
-        return user;
+        return userService.getUserStorage().amend(user);
     }
 
-    private String checkAndReturnName(User user) {
-        if (Objects.equals(null, user.getName())) {
-            return user.getLogin();
-        } else {
-            return user.getName();
-        }
+    @PutMapping(value = "/users/{id}/friends/{friendId}")
+    public void amend(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.addFriends(id, friendId);
     }
 
+    @DeleteMapping(value = "/users/{id}/friends/{friendId}")
+    public void delete(@PathVariable Long id, @PathVariable Long friendId) {
+        userService.deleteFriends(id, friendId);
+    }
 }
