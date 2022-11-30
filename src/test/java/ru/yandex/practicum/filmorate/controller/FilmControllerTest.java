@@ -57,7 +57,7 @@ class FilmControllerTest {
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         assertTrue(errorMessages.contains("дата релиза — не раньше 28 декабря 1895 года"));
     }
-/*
+
     @Test
     void durationValidationTest() {
         film.setDuration(0);
@@ -65,5 +65,4 @@ class FilmControllerTest {
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         assertTrue(errorMessages.contains("должно быть больше 0"));
     }
-*/
 }
