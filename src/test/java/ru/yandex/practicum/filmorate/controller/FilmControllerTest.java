@@ -32,7 +32,7 @@ class FilmControllerTest {
         film.setDuration(90);
     }
 
-  /*  @Test
+    @Test
     void nameValidationTest() {
         film.setName("");
         Set<ConstraintViolation<Film>> validate = validator.validate(film);
@@ -49,7 +49,7 @@ class FilmControllerTest {
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         assertTrue(errorMessages.contains("размер должен находиться в диапазоне от 0 до 200"));
     }
-*/
+
     @Test
     void dateValidationTest() {
         film.setReleaseDate(LocalDate.of(1895, 12, 27));

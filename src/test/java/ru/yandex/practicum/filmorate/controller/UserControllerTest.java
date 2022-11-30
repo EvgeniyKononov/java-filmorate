@@ -30,7 +30,7 @@ public class UserControllerTest {
         user.setName("name");
         user.setBirthday(LocalDate.of(2000, 01, 01));
     }
-/*
+
     @Test
     void emailValidationTest() {
         user.setEmail("");
@@ -42,7 +42,7 @@ public class UserControllerTest {
         errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         assertTrue(errorMessages.contains("должно иметь формат адреса электронной почты"));
     }
-*/
+
     @Test
     void loginValidationTest() {
         user.setLogin("");
@@ -54,7 +54,7 @@ public class UserControllerTest {
         errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         assertTrue(errorMessages.contains("логин не может быть пустым и не должен содержать пробелы"));
     }
-/*
+
     @Test
     void birthdayValidationTest() {
         user.setBirthday(LocalDate.of(2095, 12, 27));
@@ -62,6 +62,6 @@ public class UserControllerTest {
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         assertTrue(errorMessages.contains("должно содержать прошедшую дату"));
     }
-*/
+
 
 }
