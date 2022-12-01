@@ -36,12 +36,10 @@ public class UserControllerTest {
         user.setEmail("");
         Set<ConstraintViolation<User>> validate = validator.validate(user);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-       // assertTrue(errorMessages.contains("не должно быть пустым"));
         assertEquals(1, errorMessages.size());
         user.setEmail("mail");
         validate = validator.validate(user);
         errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        //assertTrue(errorMessages.contains("должно иметь формат адреса электронной почты"));
         assertEquals(1, errorMessages.size());
     }
 
@@ -62,9 +60,6 @@ public class UserControllerTest {
         user.setBirthday(LocalDate.of(2095, 12, 27));
         Set<ConstraintViolation<User>> validate = validator.validate(user);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        //assertTrue(errorMessages.contains("должно содержать прошедшую дату"));
         assertEquals(1, errorMessages.size());
     }
-
-
 }

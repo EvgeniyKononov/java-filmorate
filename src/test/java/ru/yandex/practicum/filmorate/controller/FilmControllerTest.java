@@ -37,7 +37,6 @@ class FilmControllerTest {
         film.setName("");
         Set<ConstraintViolation<Film>> validate = validator.validate(film);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-       // assertTrue(errorMessages.contains("не должно быть пустым"));
         assertEquals(1, errorMessages.size());
     }
 
@@ -48,7 +47,6 @@ class FilmControllerTest {
                 "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
         Set<ConstraintViolation<Film>> validate = validator.validate(film);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-       // assertTrue(errorMessages.contains("размер должен находиться в диапазоне от 0 до 200"));
         assertEquals(1, errorMessages.size());
     }
 
@@ -65,7 +63,6 @@ class FilmControllerTest {
         film.setDuration(0);
         Set<ConstraintViolation<Film>> validate = validator.validate(film);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-       // assertTrue(errorMessages.contains("должно быть больше 0"));
         assertEquals(1, errorMessages.size());
     }
 }
