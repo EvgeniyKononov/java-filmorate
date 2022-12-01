@@ -1,48 +1,55 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class FilmController {
-    private final HashMap<Long, Film> films = new HashMap<>();
-    private Long id = 1L;
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+    private final FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @GetMapping("/films")
     public List<Film> findAll() {
-        List<Film> filmList = new ArrayList<>(films.values());
-        log.debug("Текущее количесвто фильмов: {}", filmList.size());
-        return filmList;
+        return filmService.getFilmStorage().findAll();
+    }
+
+    @GetMapping("/films/popular")
+    public Set<Film> getPopularFilms(@RequestParam(required = false) Integer count) {
+        return filmService.getPopularFilms(count);
+    }
+
+    @GetMapping("/films/{id}")
+    public Film find(@PathVariable Long id) {
+        return filmService.getFilmStorage().find(id);
     }
 
     @PostMapping(value = "/films")
     public Film create(@Valid @RequestBody Film film) {
-        film.setId(id);
-        films.put(id, film);
-        id++;
-        log.debug("Добавлен фильм: {}", film);
-        return film;
+        return filmService.getFilmStorage().create(film);
     }
 
     @PutMapping(value = "/films")
     public Film amend(@Valid @RequestBody Film film) {
-        Film oldFilm;
-        if (films.containsKey(film.getId())) {
-            oldFilm = films.get(film.getId());
-            films.put(film.getId(), film);
-            log.debug("Фильм {} изменен на {}", oldFilm, film);
-        } else {
-            throw new ValidationException("нет фильма с таким id");
-        }
-        return film;
+        return filmService.getFilmStorage().amend(film);
+    }
+
+    @PutMapping(value = "/films/{id}/like/{userId}")
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping(value = "/films/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.deleteLike(id, userId);
     }
 }

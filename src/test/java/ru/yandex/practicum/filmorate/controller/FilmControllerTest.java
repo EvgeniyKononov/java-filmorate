@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
-    private FilmController filmController;
     private Film film;
     private static Validator validator;
 
@@ -26,7 +25,6 @@ class FilmControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        filmController = new FilmController();
         film = new Film();
         film.setName("name");
         film.setDescription("description");
@@ -39,8 +37,7 @@ class FilmControllerTest {
         film.setName("");
         Set<ConstraintViolation<Film>> validate = validator.validate(film);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertTrue(errorMessages.contains("не должно быть пустым"));
-
+        assertEquals(1, errorMessages.size());
     }
 
     @Test
@@ -50,7 +47,7 @@ class FilmControllerTest {
                 "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
         Set<ConstraintViolation<Film>> validate = validator.validate(film);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertTrue(errorMessages.contains("размер должен находиться в диапазоне от 0 до 200"));
+        assertEquals(1, errorMessages.size());
     }
 
     @Test
@@ -66,7 +63,6 @@ class FilmControllerTest {
         film.setDuration(0);
         Set<ConstraintViolation<Film>> validate = validator.validate(film);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertTrue(errorMessages.contains("должно быть больше 0"));
+        assertEquals(1, errorMessages.size());
     }
-
 }
