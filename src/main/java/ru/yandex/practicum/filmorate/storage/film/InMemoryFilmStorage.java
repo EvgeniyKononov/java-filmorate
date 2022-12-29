@@ -5,14 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.MPA;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Long, Film> films = new HashMap<>();
+
     private Long id = 1L;
     private static final Logger log = LoggerFactory.getLogger(InMemoryFilmStorage.class);
 
@@ -26,7 +27,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film find(Long id) {
+    public Film findById(Long id) {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {
@@ -64,5 +65,50 @@ public class InMemoryFilmStorage implements FilmStorage {
         } else {
             throw new NotFoundException(WRONG_ID);
         }
+    }
+
+    @Override
+    public List<Genre> getAllGenres() {
+        List<Film> films = findAll();
+        List<Genre> genres = new ArrayList<>();
+        for (Film film : films) {
+            genres.addAll(film.getGenres());
+        }
+        return genres;
+    }
+
+    @Override
+    public Genre getGenreById(Long id) {
+        List<Film> films = findAll();
+        for (Film film : films) {
+            for (Genre genre : film.getGenres()) {
+                if (genre.getId() == id.intValue()) {
+                    return genre;
+                }
+            }
+        }
+        throw new NotFoundException("Нет рейтинга с таким id");
+    }
+
+
+    @Override
+    public List<MPA> getAllRatings() {
+        List<Film> films = findAll();
+        List<MPA> mpas = new ArrayList<>();
+        for (Film film : films) {
+            mpas.add(film.getMpa());
+        }
+        return mpas;
+    }
+
+    @Override
+    public MPA getRatingById(Long id) {
+        List<Film> films = findAll();
+        for (Film film : films) {
+            if (film.getMpa().getId() == id.intValue()) {
+                return film.getMpa();
+            }
+        }
+        throw new NotFoundException("Нет рейтинга с таким id");
     }
 }

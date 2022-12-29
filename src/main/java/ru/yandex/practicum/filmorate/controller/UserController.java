@@ -24,12 +24,12 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public User find(@PathVariable Long id) {
-        return userService.getUserStorage().find(id);
+        return userService.getUserStorage().findById(id);
     }
 
     @GetMapping("/users/{id}/friends")
     public List<User> findFriends(@PathVariable Long id) {
-        return userService.getFriends(userService.getUserStorage().find(id).getFriends());
+        return userService.getFriends(userService.getUserStorage().findById(id).getFriends());
     }
 
     @GetMapping("/users/{id}/friends/common/{otherId}")

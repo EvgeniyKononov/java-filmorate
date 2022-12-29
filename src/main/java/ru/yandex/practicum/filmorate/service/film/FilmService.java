@@ -2,9 +2,13 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.MPA;
+
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.*;
@@ -17,13 +21,12 @@ public class FilmService {
     private final int MAX_QUANTITY_POPULAR_FILMS = 10;
     private final String NO_SUCH_LIKE = "Нет лайка от такого пользователя";
 
-    @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
     public void addLike(Long filmId, Long userId) {
-        Film film = filmStorage.find(filmId);
+        Film film = filmStorage.findById(filmId);
         Set<Long> likes = film.getLikes();
         likes.add(userId);
         film.setLikes(likes);
@@ -31,7 +34,7 @@ public class FilmService {
     }
 
     public void deleteLike(Long filmId, Long userId) {
-        Film film = filmStorage.find(filmId);
+        Film film = filmStorage.findById(filmId);
         Set<Long> likes = film.getLikes();
         if (likes.contains(userId)) {
             likes.remove(userId);
@@ -57,5 +60,21 @@ public class FilmService {
             filmQuantity = MAX_QUANTITY_POPULAR_FILMS;
         }
         return popularFilms.stream().limit(filmQuantity).collect(Collectors.toSet());
+    }
+
+    public List<Genre> getAllGenres() {
+        return filmStorage.getAllGenres();
+    }
+
+    public Genre getGenreById(Long id) {
+        return filmStorage.getGenreById(id);
+    }
+
+    public List<MPA> getAllRatings() {
+        return filmStorage.getAllRatings();
+    }
+
+    public MPA getRatingById(Long id) {
+        return filmStorage.getRatingById(id);
     }
 }
