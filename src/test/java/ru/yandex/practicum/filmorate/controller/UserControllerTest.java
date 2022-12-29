@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserControllerTest {
-    private User user = new User();
+    private User user;
     private static Validator validator;
 
     @BeforeAll
@@ -25,10 +25,8 @@ public class UserControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        user.setLogin("login");
-        user.setEmail("name@ya.ru");
-        user.setName("name");
-        user.setBirthday(LocalDate.of(2000, 01, 01));
+        user = new User("login", "name@ya.ru", "name",
+                LocalDate.of(2000, 01, 01));
     }
 
     @Test
@@ -60,6 +58,6 @@ public class UserControllerTest {
         user.setBirthday(LocalDate.of(2095, 12, 27));
         Set<ConstraintViolation<User>> validate = validator.validate(user);
         Set<String> errorMessages = validate.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        assertEquals(1, errorMessages.size());
+        assertEquals(2, errorMessages.size());
     }
 }

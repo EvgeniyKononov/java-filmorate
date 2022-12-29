@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.user;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Component
+@Qualifier("UserDbStorage")
 public class UserDbStorage implements UserStorage {
     private final Logger log = LoggerFactory.getLogger(UserDbStorage.class);
 
@@ -42,7 +44,7 @@ public class UserDbStorage implements UserStorage {
         }, keyHolder);
         Long userId = Objects.requireNonNull(keyHolder.getKey()).longValue();
         log.info("Создан пользователь с идентефикатором {}", userId);
-        return find(userId);
+        return findById(userId);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User find(Long id) {
+    public User findById(Long id) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM USERS WHERE USER_ID = ?", id);
         if (userRows.next()) {
             User user = makeUser(userRows);
@@ -94,7 +96,7 @@ public class UserDbStorage implements UserStorage {
     public List<User> getUsersByIds(Set<Long> ids) {
         List<User> users = new ArrayList<>();
         for (Long id : ids) {
-            User user = find(id);
+            User user = findById(id);
             if (Objects.nonNull(user)) {
                 users.add(user);
             }
@@ -108,7 +110,7 @@ public class UserDbStorage implements UserStorage {
         String login = rs.getString("LOGIN");
         String name = rs.getString("NAME");
         LocalDate birthday = Objects.requireNonNull(rs.getDate("BIRTHDAY")).toLocalDate();
-        HashMap<Long, Boolean> friends = getFriends(userId);
+        Map<Long, Boolean> friends = getFriends(userId);
         return new User(userId, email, login, name, birthday, friends);
     }
 
@@ -120,14 +122,14 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-    private HashMap<Long, Boolean> getFriends(Long id) {
+    private Map<Long, Boolean> getFriends(Long id) {
         SqlRowSet friendsRows1 = jdbcTemplate.queryForRowSet("SELECT FRIEND_2, CONFIRMATION FROM FRIENDS " +
                 "WHERE FRIEND_1 = ?", id);
         HashMap<Long, Boolean> friends = new HashMap<>(getMapOfFriends(friendsRows1));
         return friends;
     }
 
-    private HashMap<Long, Boolean> getMapOfFriends(SqlRowSet rs) {
+    private Map<Long, Boolean> getMapOfFriends(SqlRowSet rs) {
         HashMap<Long, Boolean> friends = new HashMap<>();
         while (rs.next()) {
             Long userId = rs.getLong(1);

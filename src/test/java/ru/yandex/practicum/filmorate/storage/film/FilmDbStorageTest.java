@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.film.Film;
@@ -21,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmDbStorageTest {
+    @Autowired
+    @Qualifier("FilmDbStorage")
     private final FilmDbStorage filmStorage;
     private Film film = new Film();
 
@@ -37,12 +40,12 @@ public class FilmDbStorageTest {
     @Test
     public void dtoFilmPublicMethodsTest() {
         filmStorage.create(film);
-        Film filmFromBd = filmStorage.find(1L);
+        Film filmFromBd = filmStorage.findById(1L);
         assertEquals("The Rock", filmFromBd.getName());
         film.setName("Rock");
         film.setId(1L);
         filmStorage.amend(film);
-        filmFromBd = filmStorage.find(1L);
+        filmFromBd = filmStorage.findById(1L);
         assertEquals("Rock", filmFromBd.getName());
         Film film2 = new Film();
         film2.setName("Titanic");

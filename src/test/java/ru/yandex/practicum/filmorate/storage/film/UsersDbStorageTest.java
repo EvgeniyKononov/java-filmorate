@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.user.User;
@@ -19,32 +20,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UsersDbStorageTest {
+    @Autowired
+    @Qualifier("UserDbStorage")
     private final UserDbStorage userStorage;
-    private User user = new User();
+    private User user;
 
     @BeforeEach
-    public void beforeEach(){
-        user.setEmail("ivan@ya.ru");
-        user.setLogin("ivbest");
-        user.setName("Ivan");
-        user.setBirthday(LocalDate.of(1988, 12, 26));
+    public void beforeEach() {
+        user = new User("ivan@ya.ru", "ivbest", "Ivan",
+                LocalDate.of(1988, 12, 26));
     }
 
     @Test
     public void dtoUsersPublicMethodsTest() {
         userStorage.create(user);
-        User userFromBd = userStorage.find(1L);
+        User userFromBd = userStorage.findById(1L);
         assertEquals("Ivan", userFromBd.getName());
         user.setName("Evgeniy");
         user.setId(1L);
         userStorage.amend(user);
-        userFromBd = userStorage.find(1L);
+        userFromBd = userStorage.findById(1L);
         assertEquals("Evgeniy", userFromBd.getName());
-        User user2 = new User();
-        user2.setEmail("sergey@ya.ru");
-        user2.setLogin("serg");
-        user2.setName("Sergey");
-        user2.setBirthday(LocalDate.of(1986, 5, 31));
+        User user2 = new User("sergey@ya.ru", "serg", "Sergey",
+                LocalDate.of(1986, 5, 31));
         userStorage.create(user2);
         List<User> users = new ArrayList<>(userStorage.findAll());
         assertEquals(2, users.size());

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Component
+@Qualifier("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
 
     private final Logger log = LoggerFactory.getLogger(UserDbStorage.class);
@@ -49,7 +51,7 @@ public class FilmDbStorage implements FilmStorage {
         Long filmId = Objects.requireNonNull(keyHolder.getKey()).longValue();
         insertFilmGenre(filmId, getGenreIdList(film.getGenres()));
         log.info("Создан фильм с идентефикатором {}", filmId);
-        return find(filmId);
+        return findById(filmId);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class FilmDbStorage implements FilmStorage {
             updateFilmGenre(film);
             updateFilmUsersLikes(film);
             log.info("Изменён фильм {}", film.getId());
-            return find(film.getId());
+            return findById(film.getId());
         } else throw new NotFoundException("Нет фильма с таким id");
 
     }
@@ -90,7 +92,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film find(Long id) {
+    public Film findById(Long id) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILM WHERE FILM_ID = ?", id);
         if (userRows.next()) {
             Film film = makeFilm(userRows);

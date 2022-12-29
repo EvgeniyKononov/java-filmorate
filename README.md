@@ -30,3 +30,4 @@ GROUP BY name
 ORDER BY likes DESC
 
 LIMIT_10;
+

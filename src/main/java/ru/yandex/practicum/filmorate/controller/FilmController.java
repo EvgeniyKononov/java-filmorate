@@ -32,7 +32,7 @@ public class FilmController {
 
     @GetMapping("/films/{id}")
     public Film find(@PathVariable Long id) {
-        return filmService.getFilmStorage().find(id);
+        return filmService.getFilmStorage().findById(id);
     }
 
     @PostMapping(value = "/films")

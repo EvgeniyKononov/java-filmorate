@@ -1,11 +1,16 @@
 package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.Data;
-import lombok.Getter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 public class MPA {
+    @NotBlank
     private Long id;
+    @Size(max = 100)
+    @NotBlank
     private String name;
 
     public MPA(Long id, String name) {

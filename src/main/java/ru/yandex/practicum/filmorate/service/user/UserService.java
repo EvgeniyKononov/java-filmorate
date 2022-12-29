@@ -14,14 +14,12 @@ public class UserService {
     @Getter
     private final UserStorage userStorage;
 
-    @Autowired
     public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
     public void addFriends(Long userId, Long friendId) {
         addFriend(userId, friendId);
-        // addFriend(friendId, userId);
     }
 
     public void deleteFriends(Long userId, Long friendId) {
@@ -30,26 +28,26 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(Long userId, Long otherId) {
-        HashMap<Long, Boolean> userFriendsIds = userStorage.find(userId).getFriends();
-        HashMap<Long, Boolean> otherIdFriendsIds = userStorage.find(otherId).getFriends();
+        Map<Long, Boolean> userFriendsIds = userStorage.findById(userId).getFriends();
+        Map<Long, Boolean> otherIdFriendsIds = userStorage.findById(otherId).getFriends();
         if (Objects.nonNull(userFriendsIds) && Objects.nonNull(otherIdFriendsIds)) {
             return addCommonFriends(userFriendsIds, otherIdFriendsIds);
         }
         return new ArrayList<>();
     }
 
-    public List<User> getFriends(HashMap<Long, Boolean> ids) {
+    public List<User> getFriends(Map<Long, Boolean> ids) {
         List<User> friends = new ArrayList<>();
         for (Map.Entry<Long, Boolean> entry : ids.entrySet()) {
-            friends.add(userStorage.find(entry.getKey()));
+            friends.add(userStorage.findById(entry.getKey()));
         }
         return friends;
     }
 
     private void addFriend(Long userId, Long friendId) {
-        User user = userStorage.find(userId);
-        userStorage.find(friendId);
-        HashMap<Long, Boolean> userFriends = user.getFriends();
+        User user = userStorage.findById(userId);
+        userStorage.findById(friendId);
+        Map<Long, Boolean> userFriends = user.getFriends();
 
         userFriends.put(friendId, false);
         user.setFriends(userFriends);
@@ -57,19 +55,19 @@ public class UserService {
     }
 
     private void deleteFriend(Long userId, Long friendId) {
-        User user = userStorage.find(userId);
-        HashMap<Long, Boolean> userFriends = user.getFriends();
+        User user = userStorage.findById(userId);
+        Map<Long, Boolean> userFriends = user.getFriends();
         userFriends.remove(friendId);
         user.setFriends(userFriends);
         userStorage.amend(user);
     }
 
     private List<User> addCommonFriends
-            (HashMap<Long, Boolean> userFriendsIds, HashMap<Long, Boolean> otherIdFriendsIds) {
+            (Map<Long, Boolean> userFriendsIds, Map<Long, Boolean> otherIdFriendsIds) {
         List<User> commonFriends = new ArrayList<>();
         for (Map.Entry<Long, Boolean> entry : userFriendsIds.entrySet()) {
             if (otherIdFriendsIds.containsKey(entry.getKey())) {
-                commonFriends.add(userStorage.find(entry.getKey()));
+                commonFriends.add(userStorage.findById(entry.getKey()));
             }
         }
         return commonFriends;

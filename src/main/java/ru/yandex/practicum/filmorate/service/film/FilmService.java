@@ -21,13 +21,12 @@ public class FilmService {
     private final int MAX_QUANTITY_POPULAR_FILMS = 10;
     private final String NO_SUCH_LIKE = "Нет лайка от такого пользователя";
 
-    @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
     public void addLike(Long filmId, Long userId) {
-        Film film = filmStorage.find(filmId);
+        Film film = filmStorage.findById(filmId);
         Set<Long> likes = film.getLikes();
         likes.add(userId);
         film.setLikes(likes);
@@ -35,7 +34,7 @@ public class FilmService {
     }
 
     public void deleteLike(Long filmId, Long userId) {
-        Film film = filmStorage.find(filmId);
+        Film film = filmStorage.findById(filmId);
         Set<Long> likes = film.getLikes();
         if (likes.contains(userId)) {
             likes.remove(userId);
